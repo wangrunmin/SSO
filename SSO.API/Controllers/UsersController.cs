@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace SSO.API.Controllers
 {
-    //[CustomAuth]
+    [CustomAuth]
     public class UsersController : ApiController
     {
         public HttpResponseMessage PostUser(string sessionid, string data)
