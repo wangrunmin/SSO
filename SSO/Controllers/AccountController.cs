@@ -1,4 +1,5 @@
-﻿using SSO.Models;
+﻿using Newtonsoft.Json;
+using SSO.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace SSO.Controllers
 {
     public class AccountController : Controller
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         public string Login(string returnUrl)
         {
@@ -31,7 +37,11 @@ namespace SSO.Controllers
                         //有效的已登录信息
                         if (session != null && session.ExpireTime.CompareTo(DateTime.Now) > 0)
                         {
-                            return "重复登录";
+                            return JsonConvert.SerializeObject(new
+                            {
+                                res = "OK",
+                                msg = "已验证用户"
+                            });
                         }
                         //无效的删除数据库记录
                         if (session != null && session.ExpireTime.CompareTo(DateTime.Now) <= 0)
@@ -65,7 +75,11 @@ namespace SSO.Controllers
                         cookie.Values.Add("ctime", session.CreateTime.ToString());
                         cookie.Values.Add("etime", session.ExpireTime.ToString());
                         Response.SetCookie(cookie);
-                        return "登录成功";
+                        return JsonConvert.SerializeObject(new
+                        {
+                            res = "OK",
+                            msg = "登录成功"
+                        });
                     }
                     else
                     {
@@ -76,7 +90,11 @@ namespace SSO.Controllers
             }
             catch (Exception e)
             {
-                return "出现异常：" + e;
+                return JsonConvert.SerializeObject(new
+                {
+                    res = "FAILED",
+                    msg = e.Message
+                });
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using SSO.Filter;
+﻿using Newtonsoft.Json;
+using SSO.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,19 @@ namespace SSO.Controllers
         [CustomAuth]
         public string Index()
         {
-            return "通过验证";
+            return JsonConvert.SerializeObject(new
+            {
+                res = "OK",
+                msg = "恭喜，通过验证"
+            });
         }
-        public string ValidFailed()
+        public string ValidFailed(string exception)
         {
-            return "未通过验证";
+            return JsonConvert.SerializeObject(new
+            {
+                res = "FAILED",
+                msg = exception
+            });
         }
     }
 }
