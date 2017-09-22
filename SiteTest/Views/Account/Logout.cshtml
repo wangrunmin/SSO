@@ -1,0 +1,28 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Logout</title>
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script>
+        function logout() {
+            $.post('http://localhost:11274/api/User/Login', function (returndata) {
+                //执行结果
+                alert(returndata)
+                var obj = JSON.parse(returndata);
+            })
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <button onclick="logout()">ajax logout</button>
+    </div>
+</body>
+</html>

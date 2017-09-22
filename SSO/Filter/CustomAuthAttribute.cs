@@ -51,7 +51,7 @@ namespace SSO.Filter
             }
             catch (Exception e)
             {
-                filterContext.Result = new RedirectResult("/Home/ValidFailed?exception=" + e.Message);
+                filterContext.Result = new RedirectResult("/api/Home/ValidFailed?exception=" + e.Message);
             }
         }
     }

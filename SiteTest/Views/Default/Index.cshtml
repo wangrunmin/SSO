@@ -11,15 +11,52 @@
     <title>Index</title>
     <script src="~/Scripts/jquery-3.2.1.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $.post("http://localhost:11274/", function (data) {
-                alert(data);
-            })
-        });
+        function getuserinfo() {
+            $.ajax({
+                url: 'http://localhost:11274/api/User/UserInfo',
+                type: 'GET',
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    Accept: "application/json; charset=utf-8",
+                    Cookie: document.cookie
+                },
+                success: function (returndata) {
+                    //执行结果
+                    console.log(returndata)
+                    var obj = JSON.parse(returndata);
+                },
+                error: function (returndata) {
+                    console.log(returndata)
+
+                }
+            });
+            //$.post('http://localhost:11274/api/User/UserInfo', function (returndata) {
+            //    //执行结果
+            //    alert(returndata)
+            //})
+        }
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=")
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1
+                    c_end = document.cookie.indexOf(";", c_start)
+                    if (c_end == -1) c_end = document.cookie.length
+                    return unescape(document.cookie.substring(c_start, c_end))
+                }
+            }
+            return ""
+        }
     </script>
 </head>
 <body>
     <div>
+        <button onclick="getuserinfo()">get user info</button>
+        <a href="../account/Login">login</a>
+        <a href="../account/Logout">logout</a>
     </div>
 </body>
 </html>

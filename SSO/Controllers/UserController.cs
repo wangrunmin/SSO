@@ -218,7 +218,7 @@ namespace SSO.Controllers
             }
         }
         //查看R[Filter]
-        [HttpPost, CustomAuth]
+        [CustomAuth]
         public string UserInfo()
         {
             try

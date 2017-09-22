@@ -1,0 +1,50 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script>
+        function login() {
+            //发送表单数据
+            var formData = new FormData($("#login")[0]);
+            $.ajax({
+                url: 'http://localhost:11274/api/User/Login',
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: function (returndata) {
+                    //执行结果
+                    alert(returndata)
+                    var obj = JSON.parse(returndata);
+                },
+                error: function (returndata) {
+                    alert(returndata);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <form method="post" id="login">
+            <input name="username" />
+            <input name="password" type="password" />
+            <button onclick="login()">ajax登录</button>
+        </form>
+    </div>
+</body>
+</html>
