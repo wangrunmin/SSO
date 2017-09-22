@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSO", "SSO\SSO.csproj", "{99A3AC87-A924-4D0C-B555-322409E8091E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteTest", "SiteTest\SiteTest.csproj", "{E8297023-8023-48E4-959C-05C6846223FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{99A3AC87-A924-4D0C-B555-322409E8091E} = {99A3AC87-A924-4D0C-B555-322409E8091E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{99A3AC87-A924-4D0C-B555-322409E8091E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99A3AC87-A924-4D0C-B555-322409E8091E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99A3AC87-A924-4D0C-B555-322409E8091E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8297023-8023-48E4-959C-05C6846223FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8297023-8023-48E4-959C-05C6846223FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8297023-8023-48E4-959C-05C6846223FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8297023-8023-48E4-959C-05C6846223FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
