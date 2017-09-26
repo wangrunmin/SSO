@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SiteTest.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,32 +14,28 @@ namespace SiteTest.Controllers
 {
     public class AccountController : Controller
     {
-        public string HttpGet(string Url, string postDataStr)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
-            request.Method = "GET";
-            request.ContentType = "text/html;charset=UTF-8";
+        public string SSOSiteUrl = "http://localhost:2925/";
+        public string siteTestUrl = "http://localhost:13550/";
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
-            string retString = myStreamReader.ReadToEnd();
-            myStreamReader.Close();
-            myResponseStream.Close();
-
-            return retString;
-        }
         public ActionResult Login()
         {
             var username = Request.Form["username"];
             var password = Request.Form["password"];
+            var returnUrl = Request.Form["returnUrl"];
             //使用接口验证用户身份,等下改成post
-            var user = HttpGet("http://localhost:11274/api/SSO/UserValidate", "username=" + username + "&password=" + password);
-            var userEnt = JsonConvert.DeserializeObject<resTmp>(user);
-            //验证成功
-            if (userEnt.res == "OK")
+            if (!string.IsNullOrEmpty(username))
             {
-                Response.Redirect("http://localhost:11274/api/SSO/SetCookie?token=" + userEnt.token + "&returnUrl=" + Request.QueryString["returnUrl"]);
+                var user = HttpHelper.HttpGet(SSOSiteUrl + "SSO/UserValidate", "username=" + username + "&password=" + password);
+                var userEnt = JsonConvert.DeserializeObject<resTmp>(user);
+                //验证成功
+                if (userEnt.res == "OK")
+                {
+                    Response.Redirect(SSOSiteUrl + "SSO/SetCookie?token=" + userEnt.token + "&returnUrl=" + returnUrl);
+                }
+                else
+                {
+                    Response.Redirect(siteTestUrl + "Account/Login?returnUrl=" + Request.QueryString["returnUrl"]);
+                }
             }
             return View();
         }

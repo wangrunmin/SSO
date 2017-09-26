@@ -11,43 +11,29 @@
     <title>Login</title>
     <script src="~/Scripts/jquery-3.2.1.min.js"></script>
     <script>
-        function login() {
-            //发送表单数据
-            var formData = new FormData($("#login")[0]);
-            $.ajax({
-                url: 'http://localhost:11274/api/User/Login',
-                type: 'POST',
-                data: formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                xhrFields: {
-                    withCredentials: true
-                },
-                crossDomain: true,
-                success: function (returndata) {
-                    //执行结果
-                    alert(returndata)
-                    var obj = JSON.parse(returndata);
-                },
-                error: function (returndata) {
-                    alert(returndata);
+        $(document).ready(function () {
+            alert(location.search)
+            var str = location.search;
+            str = str.substring(1, str.length);
+            var arr = str.split('&');
+            var whatineedisreturnurl = "";
+            for (var i = 0; i < arr.length; i++) {
+                var part = arr[i].split('=');
+                if (part[0] == "returnUrl") {
+                    whatineedisreturnurl = part[1];
                 }
-            });
-        }
+            }
+            $('[name="returnUrl"]').val(whatineedisreturnurl);
+            alert(whatineedisreturnurl);
+        });
     </script>
 </head>
 <body>
     <div>
-        <form method="post" id="login">
-            <input name="username" />
-            <input name="password" type="password" />
-            <button onclick="login()">ajax登录</button>
-        </form>
         <form method="post" action="login">
             <input name="username" />
             <input name="password" type="password" />
+            <input name="returnUrl" type="hidden" />
             <button type="submit">登录</button>
         </form>
     </div>

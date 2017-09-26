@@ -9,12 +9,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E8297023-8023-48E4-959C-05C6846223FF}</ProjectGuid>
+    <ProjectGuid>{738DA5CD-2EF0-4E33-A42D-9D4F92E3B591}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SiteTest</RootNamespace>
-    <AssemblyName>SiteTest</AssemblyName>
+    <RootNamespace>SiteTest2</RootNamespace>
+    <AssemblyName>SiteTest2</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -94,31 +94,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.2.1.js" />
-    <Content Include="Scripts\jquery-3.2.1.min.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
     <Content Include="Web.config" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Logout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Default\Index.cshtml" />
-    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.2.1.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -128,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -142,9 +132,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>13550</DevelopmentServerPort>
+          <DevelopmentServerPort>9642</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:13550/</IISUrl>
+          <IISUrl>http://localhost:9642/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
