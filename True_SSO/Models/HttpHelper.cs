@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace SiteTest.Models
+namespace True_SSO.Models
 {
     public class resTmp
     {
@@ -54,6 +55,36 @@ namespace SiteTest.Models
             myResponseStream.Close();
 
             return retString;
+        }
+    }
+    public class SSOHelper
+    {
+        public static string SSOSiteUrl = "http://localhost:2925/";
+        public static string siteTestUrl = "http://localhost:2925/";
+
+        public static string Valid(HttpRequestBase request, HttpResponseBase response)
+        {
+            //如果访问没有令牌，重定向到SSO服务去检查是否已经登录
+            if (!request.QueryString.AllKeys.Contains("token") || string.IsNullOrEmpty(request.QueryString["token"]))
+            {
+                response.Redirect(SSOSiteUrl + "SSO/CheckCookie?returnUrl=" + request.Url.AbsoluteUri);
+                return "";
+            }
+            else//访问带有令牌，检查令牌的合法性
+            {
+                //之后可以改成post
+                var token = HttpHelper.HttpGet(SSOSiteUrl + "SSO/TokenValidate", "token=" + request.QueryString["token"]);
+                var tokenEnt = JsonConvert.DeserializeObject<resTmp>(token);
+                if (tokenEnt.res == "OK")
+                {
+                    return "OK";
+                }
+                else
+                {
+                    response.Redirect(siteTestUrl + "Account/Login?returnUrl=" + request.Url.AbsoluteUri);
+                    return "";
+                }
+            }
         }
     }
 }

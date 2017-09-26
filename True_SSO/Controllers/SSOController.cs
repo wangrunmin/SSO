@@ -11,7 +11,7 @@ namespace True_SSO.Controllers
 {
     public class SSOController : Controller
     {
-        public string siteTestUrl = "http://localhost:13550/";
+        public string siteTestUrl = "http://localhost:2925/";
 
         public string CheckCookie()
         {

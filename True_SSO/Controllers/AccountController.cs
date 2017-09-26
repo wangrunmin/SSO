@@ -1,21 +1,17 @@
 ﻿using Newtonsoft.Json;
-using SiteTest.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using static SiteTest.Controllers.DefaultController;
+using True_SSO.Models;
 
-namespace SiteTest.Controllers
+namespace True_SSO.Controllers
 {
     public class AccountController : Controller
     {
         public string SSOSiteUrl = "http://localhost:2925/";
-        public string siteTestUrl = "http://localhost:13550/";
+        public string siteTestUrl = "http://localhost:2925/";
 
         public ActionResult Login()
         {
@@ -37,10 +33,6 @@ namespace SiteTest.Controllers
                     Response.Redirect(siteTestUrl + "Account/Login?returnUrl=" + Request.QueryString["returnUrl"]);
                 }
             }
-            return View();
-        }
-        public ActionResult Logout()
-        {
             return View();
         }
     }
