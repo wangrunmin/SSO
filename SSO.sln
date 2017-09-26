@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteTest", "SiteTest\SiteTe
 		{99A3AC87-A924-4D0C-B555-322409E8091E} = {99A3AC87-A924-4D0C-B555-322409E8091E}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "True_SSO", "True_SSO\True_SSO.csproj", "{927A5A9A-C61A-4D8D-AED7-F0D2774499B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{E8297023-8023-48E4-959C-05C6846223FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8297023-8023-48E4-959C-05C6846223FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8297023-8023-48E4-959C-05C6846223FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{927A5A9A-C61A-4D8D-AED7-F0D2774499B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{927A5A9A-C61A-4D8D-AED7-F0D2774499B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{927A5A9A-C61A-4D8D-AED7-F0D2774499B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{927A5A9A-C61A-4D8D-AED7-F0D2774499B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
