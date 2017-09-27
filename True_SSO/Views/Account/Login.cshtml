@@ -9,7 +9,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Login</title>
-    @*<script src="~/Scripts/jquery-3.2.1.min.js"></script>*@
 </head>
 <body>
     <div>
@@ -21,7 +20,6 @@
         </form>
     </div>
     <script>
-        alert(location.search);
         var str = location.search;
         str = str.substring(1, str.length);
         var arr = str.split('&');
@@ -30,11 +28,12 @@
             var part = arr[i].split('=');
             if (part[0] == "returnUrl") {
                 whatineedisreturnurl = part[1];
+                whatineedisreturnurl = whatineedisreturnurl.split('&')[0];
+                whatineedisreturnurl = whatineedisreturnurl.split('?')[0];
             }
         }
         var input = document.getElementsByName("returnUrl")[0];
         input.value = whatineedisreturnurl;
-        alert(whatineedisreturnurl);
     </script>
 </body>
 </html>

@@ -6,14 +6,22 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using True_SSO.Models.EntityHelper;
 
 namespace True_SSO.Models
 {
-    public class resTmp
+    namespace EntityHelper
     {
-        public string res { get; set; }
-        public string url { get; set; }
-        public string token { get; set; }
+        public class configJsonEntity
+        {
+            public string SSOSiteUrl { get; set; }
+        }
+        public class resTmp
+        {
+            public string res { get; set; }
+            public string url { get; set; }
+            public string token { get; set; }
+        }
     }
     public class HttpHelper
     {
@@ -59,31 +67,47 @@ namespace True_SSO.Models
     }
     public class SSOHelper
     {
-        public static string SSOSiteUrl = "http://localhost:2925/";
-        public static string siteTestUrl = "http://localhost:2925/";
-
-        public static string Valid(HttpRequestBase request, HttpResponseBase response)
+        public SSOHelper()
         {
-            //如果访问没有令牌，重定向到SSO服务去检查是否已经登录
+            string str = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            var path = Path.Combine(str, "config.json");
+            using (var filestream = new FileStream(path, FileMode.Open))
+            {
+                byte[] b = new byte[filestream.Length];
+                filestream.Read(b, 0, b.Length);
+                string json = Encoding.UTF8.GetString(b);
+                var ent = JsonConvert.DeserializeObject<configJsonEntity>(json);
+                SSOSiteUrl = ent.SSOSiteUrl;
+                CheckCookie = SSOSiteUrl + "SSO/CheckCookie";
+                SetCookie = SSOSiteUrl + "SSO/SetCookie";
+                UserValidate = SSOSiteUrl + "SSO/UserValidate";
+                TokenValidate = SSOSiteUrl + "SSO/TokenValidate";
+                AccountLogin = SSOSiteUrl + "Account/Login";
+            }
+        }
+
+        public string SSOSiteUrl;
+        public string CheckCookie;
+        public string SetCookie;
+        public string UserValidate;
+        public string TokenValidate;
+        public string AccountLogin;
+
+        public void Valid(HttpRequestBase request, HttpResponseBase response)
+        {
+            //如果访问的查询字符串中没有令牌或者令牌为空，重定向到SSO服务去检查是否已经登录
             if (!request.QueryString.AllKeys.Contains("token") || string.IsNullOrEmpty(request.QueryString["token"]))
             {
-                response.Redirect(SSOSiteUrl + "SSO/CheckCookie?returnUrl=" + request.Url.AbsoluteUri);
-                return "";
+                response.Redirect(CheckCookie + "?returnUrl=" + request.Url.AbsoluteUri);
             }
             else//访问带有令牌，检查令牌的合法性
             {
-                //之后可以改成post
-                var token = HttpHelper.HttpGet(SSOSiteUrl + "SSO/TokenValidate", "token=" + request.QueryString["token"]);
-                var tokenEnt = JsonConvert.DeserializeObject<resTmp>(token);
-                if (tokenEnt.res == "OK")
-                {
-                    return "OK";
-                }
-                else
-                {
-                    response.Redirect(siteTestUrl + "Account/Login?returnUrl=" + request.Url.AbsoluteUri);
-                    return "";
-                }
+                HttpHelper.HttpGet(TokenValidate, "token=" + request.QueryString["token"] + "&returnUrl=" + request.Url.AbsoluteUri);
+                //var tokenEnt = JsonConvert.DeserializeObject<resTmp>(token);
+                //if (tokenEnt.res != "OK")
+                //{
+                //    response.Redirect(AccountLogin + "?returnUrl=" + request.Url.AbsoluteUri);
+                //}
             }
         }
     }

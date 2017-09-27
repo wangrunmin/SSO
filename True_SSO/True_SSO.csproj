@@ -111,7 +111,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\HttpHelper.cs" />
+    <Compile Include="Models\Helper.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\SSOContext.cs" />
     <Compile Include="Models\User.cs" />
@@ -123,6 +123,7 @@
     <Content Include="Views\SSO\CheckCookie.cshtml" />
     <Content Include="Views\SSO\SetCookie.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="config.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
