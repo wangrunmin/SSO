@@ -13,114 +13,104 @@ namespace True_SSO.Controllers
 {
     public class SSOController : Controller
     {
+        //检查登录状态
         public void CheckCookie()
         {
-            try
+            var sso = new SSOHelper();
+            //存在cookie说明之前登录过系统
+            if (Request.Cookies.AllKeys.Contains("session") &&
+                !string.IsNullOrEmpty(Request.Cookies["session"].Values["token"]))
             {
-                var sso = new SSOHelper();
-                //存在cookie说明之前登录过其它系统
-                if (Request.Cookies.AllKeys.Contains("session"))
-                {
-                    //提取cookie中存储的token
-                    var token = Request.Cookies["session"].Values["token"];
-                    if (!string.IsNullOrEmpty(token))
-                    {
-                        Response.Redirect(Request.QueryString["returnUrl"] + "?token=" + token);
-                    }
-                    else
-                    {
-                        Response.Redirect(sso.AccountLogin + "?returnUrl=" + Request.QueryString["returnUrl"]);
-                    }
-                }
-                else//没有登录过重定向到登录页面
-                {
-                    Response.Redirect(sso.AccountLogin + "?returnUrl=" + Request.QueryString["returnUrl"]);
-                }
+                Response.Redirect(Request.QueryString["returnUrl"] + "?token=" + Request.Cookies["session"].Values["token"]);
             }
-            catch (Exception)
+            else
             {
+                Response.Redirect(sso.AccountLogin + "?returnUrl=" + Request.QueryString["returnUrl"]);
             }
         }
+        //用户名，密码验证成功返回token和userid
         public string UserValidate()
         {
-            try
+            using (var ctx = new SSOContext())
             {
-                using (var ctx = new SSOContext())
+                var sso = new SSOHelper();
+                if (Request.QueryString.AllKeys.Contains("username") &&
+                    Request.QueryString.AllKeys.Contains("password"))
                 {
-                    var sso = new SSOHelper();
                     var username = Request.QueryString["username"];
                     var password = Request.QueryString["password"];
                     var userEnt = ctx.Users.Where(m => m.LoginName == username).FirstOrDefault();
                     if (userEnt != null && userEnt.Password == password)
                     {
-                        var token = Guid.NewGuid().ToString();
-                        HttpCookie cookie = new HttpCookie("session");
-                        cookie.Values.Add("token", token);
                         return JsonConvert.SerializeObject(new
                         {
                             res = "OK",
-                            token = token
+                            userid = userEnt.UserId,
+                            token = Guid.NewGuid().ToString()
                         });
                     }
-                }
+                };
+                return JsonConvert.SerializeObject(new
+                {
+                    res = "ERROR",
+                });
             }
-            catch (Exception)
-            {
-
-            }
-            return JsonConvert.SerializeObject(new
-            {
-                res = "ERROR",
-            });
         }
+        //设置cookie
         public void SetCookie()
         {
-            try
+            using (var ctx = new SSOContext())
             {
-                using (var ctx = new SSOContext())
+                var ent = new Session()
                 {
-                    var ent = new Session()
-                    {
-                        Token = Request.QueryString["token"],
-                        CreateTime = DateTime.Now,
-                        ExpireTime = DateTime.Now.AddHours(1)
-                    };
-                    if (ctx.Sessions.Where(m => m.Token == ent.Token).FirstOrDefault() == null)
-                    {
-                        ctx.Sessions.Add(ent);
-                        ctx.SaveChanges();
-                    }
-                    HttpCookie cookie = new HttpCookie("session");
-                    cookie.Values.Add("token", ent.Token);
-                    Response.SetCookie(cookie);
-                    Response.Redirect(Request.QueryString["returnUrl"] + "?token=" + ent.Token);
+                    Token = Request.QueryString["token"],
+                    UserId = Request.QueryString["userid"],
+                    CreateTime = DateTime.Now,
+                    ExpireTime = DateTime.Now.AddHours(1)
+                };
+                var oldEnt = ctx.Sessions.Where(m => m.UserId == ent.UserId).FirstOrDefault();
+                if (oldEnt != null)
+                {
+                    oldEnt.Token = ent.Token;
+                    oldEnt.CreateTime = ent.CreateTime;
+                    oldEnt.ExpireTime = ent.ExpireTime;
+                    ctx.SaveChanges();
                 }
-            }
-            catch (Exception)
-            {
+                else
+                {
+                    ctx.Sessions.Add(ent);
+                    ctx.SaveChanges();
+                }
+                HttpCookie cookie = new HttpCookie("session");
+                cookie.Expires = ent.ExpireTime;
+                cookie.Values.Add("token", ent.Token);
+                Response.SetCookie(cookie);
+                Response.Redirect(Request.QueryString["returnUrl"] + "?token=" + ent.Token);
             }
         }
-        public void TokenValidate()
+        public string TokenValidate()
         {
-            try
+            using (var ctx = new SSOContext())
             {
                 var sso = new SSOHelper();
-                using (var ctx = new SSOContext())
+                var token = Request.QueryString["token"];
+                var session = ctx.Sessions.Where(m => m.Token == token).FirstOrDefault();
+                if (session != null && session.ExpireTime.CompareTo(DateTime.Now) > 0)
                 {
-                    var token = Request.QueryString["token"];
-                    if (ctx.Sessions.Where(m => m.Token == token).FirstOrDefault() != null)
+                    return JsonConvert.SerializeObject(new
                     {
-
-                    }
-                    else
-                    {
-                        Response.Redirect(sso.AccountLogin + "?returnUrl=" + Request.QueryString["returnUrl"]);
-
-                    }
+                        res = "OK"
+                    });
                 }
-            }
-            catch (Exception)
-            {
+                if (session != null && session.ExpireTime.CompareTo(DateTime.Now) <= 0)
+                {
+                    ctx.Sessions.Remove(session);
+                    ctx.SaveChanges();
+                }
+                return JsonConvert.SerializeObject(new
+                {
+                    res = "ERROR"
+                });
             }
         }
     }

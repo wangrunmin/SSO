@@ -24,7 +24,7 @@ namespace True_SSO.Controllers
                 var tokenEnt = JsonConvert.DeserializeObject<resTmp>(tokenString);
                 if (tokenEnt.res == "OK")
                 {
-                    Response.Redirect(sso.SetCookie + "?token=" + tokenEnt.token + "&returnUrl=" + returnUrl);
+                    Response.Redirect(sso.SetCookie + "?token=" + tokenEnt.token + "&returnUrl=" + returnUrl + "&userid=" + tokenEnt.userid);
                 }
                 else
                 {

@@ -9,8 +9,8 @@ namespace True_SSO.Models
     public class Session
     {
         [Key]
-        public string Token { get; set; }
         public string UserId { get; set; }
+        public string Token { get; set; }
         public DateTime ExpireTime { get; set; }
         public DateTime CreateTime { get; set; }
     }

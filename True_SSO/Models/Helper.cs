@@ -19,7 +19,7 @@ namespace True_SSO.Models
         public class resTmp
         {
             public string res { get; set; }
-            public string url { get; set; }
+            public string userid { get; set; }
             public string token { get; set; }
         }
     }
@@ -67,25 +67,6 @@ namespace True_SSO.Models
     }
     public class SSOHelper
     {
-        public SSOHelper()
-        {
-            string str = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            var path = Path.Combine(str, "config.json");
-            using (var filestream = new FileStream(path, FileMode.Open))
-            {
-                byte[] b = new byte[filestream.Length];
-                filestream.Read(b, 0, b.Length);
-                string json = Encoding.UTF8.GetString(b);
-                var ent = JsonConvert.DeserializeObject<configJsonEntity>(json);
-                SSOSiteUrl = ent.SSOSiteUrl;
-                CheckCookie = SSOSiteUrl + "SSO/CheckCookie";
-                SetCookie = SSOSiteUrl + "SSO/SetCookie";
-                UserValidate = SSOSiteUrl + "SSO/UserValidate";
-                TokenValidate = SSOSiteUrl + "SSO/TokenValidate";
-                AccountLogin = SSOSiteUrl + "Account/Login";
-            }
-        }
-
         public string SSOSiteUrl;
         public string CheckCookie;
         public string SetCookie;
@@ -93,6 +74,30 @@ namespace True_SSO.Models
         public string TokenValidate;
         public string AccountLogin;
 
+        public SSOHelper()
+        {
+            #region 读取config.json文件初始化站点地址
+            lock (this)
+            {
+                string str = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+                var path = Path.Combine(str, "config.json");
+                using (var filestream = new FileStream(path, FileMode.Open))
+                {
+                    byte[] arr = new byte[filestream.Length];
+                    filestream.Read(arr, 0, arr.Length);
+                    var ent = JsonConvert.DeserializeObject<configJsonEntity>(Encoding.UTF8.GetString(arr));
+                    SSOSiteUrl = ent.SSOSiteUrl;
+                    CheckCookie = ent.SSOSiteUrl + "SSO/CheckCookie";
+                    SetCookie = ent.SSOSiteUrl + "SSO/SetCookie";
+                    UserValidate = ent.SSOSiteUrl + "SSO/UserValidate";
+                    TokenValidate = ent.SSOSiteUrl + "SSO/TokenValidate";
+                    AccountLogin = ent.SSOSiteUrl + "Account/Login";
+                } 
+            }
+            #endregion
+        }
+
+        //此方法校验不需要返回值，如果校验失败会重定向到对应的页面。
         public void Valid(HttpRequestBase request, HttpResponseBase response)
         {
             //如果访问的查询字符串中没有令牌或者令牌为空，重定向到SSO服务去检查是否已经登录
@@ -100,14 +105,14 @@ namespace True_SSO.Models
             {
                 response.Redirect(CheckCookie + "?returnUrl=" + request.Url.AbsoluteUri);
             }
-            else//访问带有令牌，检查令牌的合法性
+            else//访问带有令牌，检查令牌的合法性，不合法重定向到登录页面
             {
-                HttpHelper.HttpGet(TokenValidate, "token=" + request.QueryString["token"] + "&returnUrl=" + request.Url.AbsoluteUri);
-                //var tokenEnt = JsonConvert.DeserializeObject<resTmp>(token);
-                //if (tokenEnt.res != "OK")
-                //{
-                //    response.Redirect(AccountLogin + "?returnUrl=" + request.Url.AbsoluteUri);
-                //}
+                var tokenString = HttpHelper.HttpGet(TokenValidate, "token=" + request.QueryString["token"]);
+                var tokenEnt = JsonConvert.DeserializeObject<resTmp>(tokenString);
+                if (tokenEnt.res != "OK")
+                {
+                    response.Redirect(AccountLogin + "?returnUrl=" + request.Url.AbsoluteUri);
+                }
             }
         }
     }
