@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using True_SSO.Models;
@@ -18,8 +20,10 @@ namespace True_SSO.Controllers
             var returnUrl = Request.Form["returnUrl"];
             var sso = new SSOHelper();
             //使用接口验证用户身份
-            if (!string.IsNullOrEmpty(username))
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
+                password = Encoding.Unicode.GetString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.Unicode.GetBytes(password)));
                 var tokenString = HttpHelper.HttpGet(sso.UserValidate, "username=" + username + "&password=" + password);
                 var tokenEnt = JsonConvert.DeserializeObject<resTmp>(tokenString);
                 if (tokenEnt.res == "OK")
